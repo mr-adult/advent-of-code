@@ -1,1 +1,1 @@
-This repository contains my solutions to the challenges of Advent of Code 2023. Advent of Code does not start until Dec 1st. For more information, see [adventofcode.com](https://adventofcode.com/).
+This repository contains my solutions to the challenges of Advent of Code 2023. Advent of Code does not start until Dec 1st. For more information, visit [adventofcode.com](https://adventofcode.com/).
