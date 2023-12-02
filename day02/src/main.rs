@@ -1,4 +1,5 @@
-use std::{fmt::Display, iter::Peekable, str::Chars};
+use std::fmt::Display;
+use tokenizer::Parser;
 
 fn main() {
     let data = include_str!("../data.txt");
@@ -128,7 +129,7 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
                 green: green.unwrap_or(0),
             });
 
-            if parser.chars_iter.peek().is_none() {
+            if parser.peek().is_none() {
                 break;
             }
         }
@@ -137,71 +138,6 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
     }
 
     return Ok(games);
-}
-
-struct Parser<'i> {
-    source: &'i str,
-    chars_iter: Peekable<Chars<'i>>,
-}
-
-impl<'i> Parser<'i> {
-    fn new(source: &'i str) -> Self {
-        Self {
-            source,
-            chars_iter: source.chars().peekable(),
-        }
-    }
-
-    fn match_str(&mut self, str: &str) -> bool {
-        for char in str.chars() {
-            if !self.match_char(char) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    fn match_char(&mut self, ch: char) -> bool {
-        match self.chars_iter.peek() {
-            None => false,
-            Some(source_ch) => {
-                if *source_ch == ch {
-                    self.chars_iter.next();
-                    return true;
-                }
-                return false;
-            }
-        }
-    }
-
-    fn match_int(&mut self) -> Option<isize> {
-        let mut num_str = String::new();
-        if self.match_char('-') {
-            num_str.push('-');
-        }
-        loop {
-            match self.chars_iter.peek() {
-                None => break,
-                Some(ch) => match ch {
-                    '0'..='9' => {
-                        num_str.push(*ch);
-                        self.chars_iter.next();
-                    }
-                    _ => break,
-                },
-            }
-        }
-
-        if num_str.len() == 0 || num_str.len() == 1 && num_str[0..1] == *"-" {
-            return None;
-        }
-
-        return Some(
-            num_str
-                .parse::<isize>()
-                .expect("string to be a valid integer at this point."),
-        );
-    }
 }
 
 struct Game {

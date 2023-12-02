@@ -9,6 +9,9 @@ version = "0.1.0"
 [[package]]
 name = "day02"
 version = "0.1.0"
+dependencies = [
+ "tokenizer",
+]
 
 [[package]]
 name = "day03"
@@ -100,4 +103,8 @@ version = "0.1.0"
 
 [[package]]
 name = "day25"
+version = "0.1.0"
+
+[[package]]
+name = "tokenizer"
 version = "0.1.0"
