@@ -248,6 +248,7 @@ mod tests {
         );
     }
 
+    #[test]
     fn part2_above() {
         let above = "120\n*..\n80";
         assert_eq!(format!("{}", 120 * 80), format!("{}", super::part2(above)));
