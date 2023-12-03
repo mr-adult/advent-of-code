@@ -42,26 +42,27 @@ fn part2(data: &str, bag_contents: &Round) -> impl Display {
         }
         Ok(games) => {
             for game in games {
-                let power = game
-                    .rounds
-                    .iter()
-                    .map(|round| round.red)
-                    .max()
-                    .expect("Game to have at least 1 round")
-                    * game
-                        .rounds
-                        .iter()
-                        .map(|round| round.blue)
-                        .max()
-                        .expect("Game to have at least 1 round")
-                    * game
-                        .rounds
-                        .iter()
-                        .map(|round| round.green)
-                        .max()
-                        .expect("Game to have at least 1 round");
+                let maxes = game.rounds.iter().fold(
+                    Round {
+                        red: 0,
+                        blue: 0,
+                        green: 0,
+                    },
+                    |mut acc, round| {
+                        if round.red > acc.red {
+                            acc.red = round.red;
+                        }
+                        if round.blue > acc.blue {
+                            acc.blue = round.blue;
+                        }
+                        if round.green > acc.green {
+                            acc.green = round.green;
+                        }
+                        acc
+                    },
+                );
 
-                result += power;
+                result += maxes.red * maxes.blue * maxes.green;
             }
         }
     }
@@ -74,7 +75,7 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
 
     for line in data.lines() {
         let mut parser = Parser::new(line);
-        if !parser.match_str("Game ") {
+        if parser.match_str("Game ").is_none() {
             return Err("Game");
         }
 
@@ -84,12 +85,12 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
             Some(int) => game_num = int,
         }
 
-        if !parser.match_str(": ") {
+        if parser.match_str(": ").is_none() {
             return Err(":");
         }
 
         let mut game = Game {
-            number: game_num,
+            number: game_num.1,
             rounds: Vec::new(),
         };
 
@@ -103,13 +104,13 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
                     None => {
                         break;
                     }
-                    Some(int) => {
+                    Some((_, int)) => {
                         parser.match_char(' ');
-                        if parser.match_str("red") {
+                        if parser.match_str("red").is_some() {
                             red = Some(int);
-                        } else if parser.match_str("blue") {
+                        } else if parser.match_str("blue").is_some() {
                             blue = Some(int);
-                        } else if parser.match_str("green") {
+                        } else if parser.match_str("green").is_some() {
                             green = Some(int);
                         } else {
                             return Err("red, blue, or green");
@@ -118,7 +119,7 @@ fn parse_input(data: &str) -> Result<Vec<Game>, &'static str> {
                 }
 
                 parser.match_str(", ");
-                if parser.match_str("; ") {
+                if parser.match_str("; ").is_some() {
                     break;
                 }
             }
@@ -149,4 +150,30 @@ struct Round {
     red: isize,
     blue: isize,
     green: isize,
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cases() {
+        let bag_contents = super::Round {
+            red: 12,
+            green: 13,
+            blue: 14,
+        };
+        assert_eq!(
+            format!("{}", 2512),
+            format!(
+                "{}",
+                super::part1(include_str!("../data.txt"), &bag_contents)
+            )
+        );
+        assert_eq!(
+            format!("{}", 67335),
+            format!(
+                "{}",
+                super::part2(include_str!("../data.txt"), &bag_contents)
+            )
+        );
+    }
 }

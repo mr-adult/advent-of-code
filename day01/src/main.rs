@@ -123,3 +123,18 @@ fn part2(data: &str) -> usize {
 
     result
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cases() {
+        assert_eq!(
+            format!("{}", 54953),
+            format!("{}", super::part1(include_str!("../data.txt")))
+        );
+        assert_eq!(
+            format!("{}", 53868),
+            format!("{}", super::part2(include_str!("../data.txt")))
+        );
+    }
+}
