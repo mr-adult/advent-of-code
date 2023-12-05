@@ -30,41 +30,29 @@ fn part1(data: &str) -> impl Display {
 fn part2(data: &str) -> impl Display {
     let cards = parse_input(data);
     let mut queue_of_stacks = VecDeque::new();
-    let mut resulting_cards = Vec::new();
-    for card in cards {
-        queue_of_stacks.push_back(vec![card]);
-    }
+    queue_of_stacks.extend(cards.into_iter().map(|card| (1, card)));
 
-    for i in 0..queue_of_stacks.len() {
-        while queue_of_stacks.get(i).expect("stack to be at index").len() > 0 {
-            let card = queue_of_stacks
-                .get_mut(i)
-                .expect("stack to be at index")
-                .pop()
-                .expect("stack to contain a card");
+    for index in 0..queue_of_stacks.len() {
+        let card_tuple = queue_of_stacks.get(index).unwrap();
+        let count = card_tuple.0;
+        let card = &card_tuple.1;
 
-            let mut card_val = 0;
-            for actual_num in card.actual_nums.iter() {
-                if card.winning_nums.contains(actual_num) {
-                    card_val += 1;
-                }
+        let mut card_val = 0;
+        for actual_num in card.actual_nums.iter() {
+            if card.winning_nums.contains(actual_num) {
+                card_val += 1;
             }
+        }
 
-            for j in (i + 1)
-                ..([i + card_val + 1, queue_of_stacks.len()]
-                    .into_iter()
-                    .min()
-                    .unwrap() as usize)
-            {
-                let new_val = queue_of_stacks.get(j).unwrap().get(0).unwrap().clone();
-                queue_of_stacks[j].push(new_val);
-            }
-
-            resulting_cards.push(card)
+        for i in 1..card_val + 1 {
+            queue_of_stacks.get_mut(index + i).unwrap().0 += count;
         }
     }
 
-    resulting_cards.len()
+    return queue_of_stacks
+        .into_iter()
+        .map(|stack| stack.0)
+        .fold(0, |acc, num| acc + num);
 }
 
 fn parse_input(input: &str) -> Vec<Card> {
@@ -147,6 +135,6 @@ mod tests {
     #[test]
     fn part2_actual() {
         let data = include_str!("../data.txt");
-        assert_eq!(format!("{}", "unknown"), format!("{}", super::part2(data)));
+        assert_eq!(format!("{}", 11827296), format!("{}", super::part2(data)));
     }
 }
