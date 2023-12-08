@@ -34,10 +34,16 @@ version = "0.1.0"
 [[package]]
 name = "day06"
 version = "0.1.0"
+dependencies = [
+ "tokenizer",
+]
 
 [[package]]
 name = "day07"
 version = "0.1.0"
+dependencies = [
+ "tokenizer",
+]
 
 [[package]]
 name = "day08"

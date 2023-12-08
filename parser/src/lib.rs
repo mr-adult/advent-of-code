@@ -2,7 +2,7 @@ use core::num;
 use std::{iter::Peekable, str::CharIndices};
 
 pub struct Parser<'i> {
-    source: &'i str,
+    pub source: &'i str,
     chars_iter: Peekable<CharIndices<'i>>,
 }
 
